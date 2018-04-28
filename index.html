@@ -1,0 +1,177 @@
+<!html>
+<head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<style>
+#scrambled_words {
+    display:inline-block;
+    border: solid 1px #000;
+    min-height: 30px;
+    width: 300px;
+}
+</style>
+
+</head>
+
+<body>
+<center>
+<h1> Word scrambler </h1>
+
+<h2>Put in your words separated by a new line (Enter)</h2>
+<div contentEditable="true" id="scrambled_words"></div></p>
+<button id="btngen" onclick="scramble()">Scramble!</button></p>
+
+<h3> Shuffled Words </h3>
+
+<div id="output">
+
+</div>
+
+<a id="export" class="myButton" download="scramble.rtf" href="#">export</a>
+
+
+<script>
+
+
+// Shuffle Function for the words
+String.prototype.shuffle = function () {
+    var a = this.split(""),
+        n = a.length;
+
+    for(var i = n - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        var tmp = a[i];
+        a[i] = a[j];
+        a[j] = tmp;
+    }
+    return a.join("");
+}
+
+var blobObject = null;
+
+function createDownloadLink(anchorSelector, str, fileName){
+	
+	if(window.navigator.msSaveOrOpenBlob) {
+		var fileData = [str];
+		blobObject = new Blob(fileData);
+		$(anchorSelector).click(function(){
+			window.navigator.msSaveOrOpenBlob(blobObject, fileName);
+		});
+	} else {
+		var url = "data:text/plain;charset=utf-8," + encodeURIComponent(str);
+		$(anchorSelector).attr("href", url);
+	}
+}
+
+function shuffle_list(array) {
+  var currentIndex = array.length, temporaryValue, randomIndex;
+
+  // While there remain elements to shuffle...
+  while (0 !== currentIndex) {
+
+    // Pick a remaining element...
+    randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex -= 1;
+
+    // And swap it with the current element.
+    temporaryValue = array[currentIndex];
+    array[currentIndex] = array[randomIndex];
+    array[randomIndex] = temporaryValue;
+  }
+
+  return array;
+}
+
+
+
+// Once the scramble button is clicked
+// Get the inputted list, split it, scramble it, display it underneath
+function scramble() {
+	var scrtext = document.getElementById('scrambled_words').innerHTML
+	var scrlist = scrtext.split('<br>')
+	
+	// Randomise every item in the list
+	scrlist = shuffle_list(scrlist)
+	
+
+	
+	text_to_send = ''
+	
+	// Shuffle letters based on the words (two words = shuffles)
+	for (i = 0; i < scrlist.length; i++) {
+		original_word = scrlist[i]
+		
+		
+		if (original_word.includes(' ')){		
+			spaced_list = original_word.split(' ')
+			spaced_words = ''
+			for (x = 0; x < spaced_list.length; x++) {
+				spaced_words += spaced_list[x].shuffle().toLowerCase() + ' '
+			}
+			
+			shuffled_word = spaced_words
+		
+		
+		} else {
+		
+		shuffled_word = original_word.shuffle().toLowerCase()
+		
+		}
+		console.log(shuffled_word)
+		
+		// Write that to the DOM
+		
+		if (shuffled_word != '') {
+		
+		text_to_send += i + 1 + '. ' + shuffled_word + '______________' + '</br>'
+		
+		}
+		
+
+	
+	}
+	
+	document.getElementById('output').innerHTML = text_to_send
+	
+	
+	// RTF header info
+	rtf_header = '{\\rtf1\\ansi\\deff0 {\\fonttbl {\\f0 Times New Roman;}}\\f0\\fs40\r\n'
+	
+	// TITLE
+	rtf_title = '{\\pard \\qc \\b Unscramble the words!\\line \\par}\r\n'
+	
+	// Paragraph
+	rtf_paragraph = '{\\pard \\ql\r\n'
+	
+	// Convert HTML to RTF style text
+	
+	
+	rtf_text_to_send = text_to_send.replace(/\<\/br\>/g, '\\line\\line\r\n')
+	
+	/*
+	1. atfnceasi ____________\line\line
+	2. jigenib ____________\line\line
+	3. stiuatm ____________
+	*/
+	
+	// RTF Footer info
+	rtf_footer = '\\par}}'
+	
+	rtf_file = rtf_header + rtf_title + rtf_paragraph + rtf_text_to_send + rtf_footer
+	
+	
+
+
+	var str = rtf_file
+	createDownloadLink("#export",str,"download.txt");
+	document.getElementById('export').click();
+	
+	
+}
+
+
+</script>
+
+
+</center>
+</body>
+</html>

@@ -1,0 +1,2 @@
+origin = minimal pairs origin
+neworigin = word scrambler
