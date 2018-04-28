@@ -1,33 +1,40 @@
 <!html>
 <head>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-<style>
-#scrambled_words {
-    display:inline-block;
-    border: solid 1px #000;
-    min-height: 30px;
-    width: 300px;
-}
-</style>
+<meta name="viewport" content="width=device-width, initial-scale=1" charset="utf-8">
+<link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css">
+<script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+<script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
 
 </head>
 
 <body>
+<div data-role="page">
 <center>
-<h1> Word scrambler </h1>
 
-<h2>Put in your words separated by a new line (Enter)</h2>
-<div contentEditable="true" id="scrambled_words"></div></p>
+ <div data-role="header">
+            <h1> Word scrambler </h1>
+        </div><!-- /header -->
+
+  <div role="main" class="ui-content">
+
+<h2>Word Scrambler</h2>
+<h3>Put in your words separated by a new line (Enter)</h3>
+<!-- <div contentEditable="true" id="scrambled_words"></div></p>-->
+
+<textarea id="scrambled_words"></textarea></p>
+
 <button id="btngen" onclick="scramble()">Scramble!</button></p>
 
+<div style="display:none">
 <h3> Shuffled Words </h3>
+
 
 <div id="output">
 
 </div>
-
 <a id="export" class="myButton" download="scramble.rtf" href="#">export</a>
-
+</div>
+        </div><!-- /content -->
 
 <script>
 
@@ -86,8 +93,9 @@ function shuffle_list(array) {
 // Once the scramble button is clicked
 // Get the inputted list, split it, scramble it, display it underneath
 function scramble() {
-	var scrtext = document.getElementById('scrambled_words').innerHTML
-	var scrlist = scrtext.split('<br>')
+	var scrtext = document.getElementById('scrambled_words').value
+	var scrlist = scrtext.split('\n')
+	console.log(scrlist)
 	
 	// Randomise every item in the list
 	scrlist = shuffle_list(scrlist)
